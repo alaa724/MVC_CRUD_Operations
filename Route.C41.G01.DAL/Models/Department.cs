@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Route.C41.G01.DAL.Models
 {
     // Model
-    internal class Department
+    public class Department
     {
         public int Id { get; set; }
         public string Code { get; set; }
