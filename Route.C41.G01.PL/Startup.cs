@@ -16,12 +16,13 @@ namespace Route.C41.G01.PL
 {
     public class Startup
     {
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; } = null;
 
         // This method gets called by the runtime. Use this method to add services to the DI container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,7 +37,7 @@ namespace Route.C41.G01.PL
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer("Server = .; Database = MVCAplicationG01; Trusted_Connection = True;");
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
         }
