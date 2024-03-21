@@ -24,7 +24,8 @@ namespace Route.C41.G01.PL.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var departments = _departmentRepo.GetAll();
+            return View(departments);
         }
     }
 }
