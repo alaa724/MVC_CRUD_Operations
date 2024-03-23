@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Route.C41.G01.BL.Interfaces;
+using Route.C41.G01.BL.Repositories;
+using Route.C41.G01.DAL.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +18,30 @@ namespace Route.C41.G01.PL
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; } = null;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the DI container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(); // Register Built-In Services Required by MVC
+
+            //services.AddTransient<ApplicationDbContext>();
+            //services.AddSingleton<ApplicationDbContext>();
+
+            //services.AddScoped<ApplicationDbContext>();
+            //services.AddScoped<DbContextOptions<ApplicationDbContext>>();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

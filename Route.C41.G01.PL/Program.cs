@@ -11,9 +11,16 @@ namespace Route.C41.G01.PL
 {
     public class Program
     {
+        // Entry Point
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+           var hostBuilder = CreateHostBuilder(args).Build();
+
+            // Data Seeding
+            // Apply Migrations
+
+            hostBuilder.Run(); // Application Is Ready For Requests
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
