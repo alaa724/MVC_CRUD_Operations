@@ -10,43 +10,19 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G01.BL.Repositories
 {
-    public class EmployeeRepository : IEmployeeInterface
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeInterface
     {
-        private readonly ApplicationDbContext _dbContext;
+        //private readonly ApplicationDbContext _dbContext;
 
-        public EmployeeRepository(ApplicationDbContext dbContext) 
+        public EmployeeRepository(ApplicationDbContext dbContext) // Ask CLR For Creating Object From DbContext
+                      : base(dbContext)
         {
-            _dbContext = dbContext;
-
+            //_dbContext = dbContext;
         }
 
-        public int Add(Employee entity)
+        public IQueryable<Employee> GetEmployeesByAddress(string address)
         {
-            _dbContext.Employees.Add(entity);
-            return _dbContext.SaveChanges();
+            return _dbContext.Employees.Where(E => E.Address.ToLower() == address.ToLower());
         }
-
-        public int Update(Employee entity)
-        {
-            _dbContext.Employees.Update(entity);
-            return _dbContext.SaveChanges();
-        }
-
-        public int Delete(Employee entity)
-        {
-            _dbContext.Employees.Remove(entity);
-            return _dbContext.SaveChanges();
-        }
-
-        public Employee Get(int id)
-        {
-            return _dbContext.Find<Employee>(id);
-        }
-
-        public IEnumerable<Employee> GetAll()
-        {
-            return _dbContext.Employees.AsNoTracking().ToList();
-        }
-
     }
 }

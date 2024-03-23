@@ -7,16 +7,8 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G01.BL.Interfaces
 {
-    public interface IEmployeeInterface
+    public interface IEmployeeInterface : IGenericRepository<Employee>
     {
-        IEnumerable<Employee> GetAll();
-
-        Employee Get(int id);
-
-        int Add(Employee entity);
-
-        int Update(Employee entity);
-
-        int Delete(Employee entity);
+        IQueryable<Employee> GetEmployeesByAddress(string address);
     }
 }
