@@ -46,7 +46,14 @@
         <input asp-for="HiringDate" class="form-control" />
     </div>
 
-    <input type="submit" value="Save" class="btn btn-primary"/>|
+    <input type="submit" value="Save" class="btn btn-primary"/> |
     <a asp-action="Index" class="btn btn-link">Cancel</a>
 </form>
+
+
+@section ValidationScriptsSection {
+    <script src="~\lib\jquery-validation\dist\jquery.validate.js"></script>
+    <script src="~\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js"></script>
+
+}
 
