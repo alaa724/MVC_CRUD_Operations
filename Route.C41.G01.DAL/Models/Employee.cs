@@ -34,8 +34,8 @@ namespace Route.C41.G01.DAL.Models
 
         public Gender Gender { get; set; }
 
-        [RegularExpression(@"^(\\d{1,}) [a-zA-Z0-9\\s]+(\\,)? [a-zA-Z]+(\\,)? [A-Z]{2} [0-9]{5,6}$"
-            , ErrorMessage ="Address Must be like 123-Street-City-Country")]
+        [RegularExpression(@"^[a-zA-Z0-9\s\-\(\)\\/.,]+$"
+            , ErrorMessage = "Address Must be like 123 Main St.")]
         public string Address { get; set; }
 
         [DataType(DataType.Currency)]
