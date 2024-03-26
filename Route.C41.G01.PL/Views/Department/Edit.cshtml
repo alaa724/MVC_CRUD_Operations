@@ -14,20 +14,7 @@
 
     <div asp-validation-summary="ModelOnly"></div>
 
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Code"></label>
-        <input asp-for="Code" class="form-control" />
-        <span asp-validation-for="Code" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="DateOfeCreation"></label>
-        <input asp-for="DateOfeCreation" class="form-control" />
-    </div>
+    <partial name="PartialViews/CreateEditDepartmentPartial" />
 
     <input type="submit" value="Save" class="btn btn-primary" />
     <a asp-action="Index" class="btn btn-light">Cancel</a>
@@ -35,8 +22,7 @@
 </form>
 
 @section ValidationScriptsSection {
-    <script src="~\lib\jquery-validation\dist\jquery.validate.js"></script>
-    <script src="~\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js"></script>
-
+    <partial name="_ValidationScriptsPartial"/>
+    
 }
 
