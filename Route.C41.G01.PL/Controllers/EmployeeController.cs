@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BL.Interfaces;
 using Route.C41.G01.DAL.Models;
 using System;
+using System.Linq;
 
 namespace Route.C41.G01.PL.Controllers
 {
@@ -20,22 +21,16 @@ namespace Route.C41.G01.PL.Controllers
             _env = env;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchInp)
         {
-            TempData.Keep();
-            // Binding Throw View's Dictionary : Transfare Date From Action To View [One Way]
+            var employee = Enumerable.Empty<Employee>();
 
-            // 1. ViewData is a Dictionary type property [introduced in ASp.Net Framework 3.5]
-            //   => It helps us to to pass data from the controller(Action) to the corresponding view.
-
-            ViewData["Message"] = "Hello ViewData";
-
-            // 2. ViewBag is a Dynamic type property [introduced in ASp.Net Framework 4.0]
-            //   => It helps us to to pass data from the controller(Action) to the corresponding view.
-            ViewBag.Message = "Hello ViewBag";
-
-            var employee = _employeeInterface.GetAll();
-            return View(employee);
+            if (string.IsNullOrEmpty(searchInp))
+                employee = _employeeInterface.GetAll();
+            else
+                employee = _employeeInterface.SearchByName(searchInp);
+            
+             return View(employee);
         }
 
         

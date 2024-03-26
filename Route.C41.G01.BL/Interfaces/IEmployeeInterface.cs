@@ -10,5 +10,7 @@ namespace Route.C41.G01.BL.Interfaces
     public interface IEmployeeInterface : IGenericRepository<Employee>
     {
         IQueryable<Employee> GetEmployeesByAddress(string address);
+
+        IQueryable<Employee> SearchByName(string name);
     }
 }

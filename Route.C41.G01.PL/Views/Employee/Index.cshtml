@@ -3,21 +3,11 @@
 @{
     ViewData["Title"] = "Index";
 
-    string ViewDataMessage = ViewData["Message"] as string; // Enforce Type Safety [Requires Type Conversion] => Strongly Typed Lang
+    // string ViewDataMessage = ViewData["Message"] as string; // Enforce Type Safety [Requires Type Conversion] => Strongly Typed Lang
 
-    string ViewBagMessage = ViewBag.Message; // Can't Enforce Type Safety [Not Requires Type Conversion] => Weakly Typed Lang
+    // string ViewBagMessage = ViewBag.Message; // Can't Enforce Type Safety [Not Requires Type Conversion] => Weakly Typed Lang
 }
 
-@* <div class="alert alert-warning">@ViewData["Message"]</div>*@
-
-@* <div class="alert alert-success">@ViewBag.Message</div> *@
-
-@if(!string.IsNullOrEmpty(TempData["Massage"]as string))
-{
-<div class="alert alert-success">
-    @TempData["Message"]
-</div>
-}
 
 <h1>All Employees</h1>
 
@@ -26,6 +16,18 @@
 
 <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Create New Employee</a>
 <br />
+
+<div class="row justify-content-center align-items-center mt-5" >
+    <form asp-action="Index" class="row col-8 offset-2">
+        <div class="col-8">
+            <input type="text" class="form-control" name="searchInp" id="searchInp" placeholder="Search By Name" />
+        </div>
+        <div class="col-4">
+            <input type="submit" value="Search" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
 
 @if(Model.Count() > 0)
 {
