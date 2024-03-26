@@ -64,7 +64,7 @@ namespace Route.C41.G01.DAL.Models
         public int? DepartmentId { get; set; } // FK Column
 
         //[InverseProperty(nameof(Models.Department.Employees))]
-        // Navigational Property [One]
+        // Navigational Property [One] => [Related Data]
         public Department Department { get; set; }
 
     }

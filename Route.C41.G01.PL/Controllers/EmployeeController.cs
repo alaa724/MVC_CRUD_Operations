@@ -10,11 +10,13 @@ namespace Route.C41.G01.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeInterface _employeeInterface;
+        //private readonly IDepartmentRepository _departmentRepo;
         private readonly IWebHostEnvironment _env;
 
-        public EmployeeController(IEmployeeInterface employeeInterface , IWebHostEnvironment env)// Ask CLR for creating an object from class implementing "IEmployeeInterface"
+        public EmployeeController(IEmployeeInterface employeeInterface,/*IDepartmentRepository departmentRepo ,*/ IWebHostEnvironment env)// Ask CLR for creating an object from class implementing "IEmployeeInterface"
         {
             _employeeInterface = employeeInterface;
+            //_departmentRepo = departmentRepo;
             _env = env;
         }
 
@@ -40,6 +42,8 @@ namespace Route.C41.G01.PL.Controllers
         //[HttpGet]
         public IActionResult Create()
         {
+            //ViewData["Departments"] = _departmentRepo.GetAll();
+            //ViewBag.Departments = _departmentRepo.GetAll();
             return View();
         }
 
@@ -89,6 +93,7 @@ namespace Route.C41.G01.PL.Controllers
         //[HttpGet]
         public IActionResult Edit(int? id)
         {
+            //ViewBag.Departments = _departmentRepo.GetAll();
             return Details(id, "Edit");
         }
 
