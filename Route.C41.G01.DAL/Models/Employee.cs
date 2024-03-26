@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -56,8 +57,15 @@ namespace Route.C41.G01.DAL.Models
 
         public ContractType ContractType { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
+
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
-        public bool IsDeleted { get; set; } = false;
+        public int? DepartmentId { get; set; } // FK Column
+
+        //[InverseProperty(nameof(Models.Department.Employees))]
+        // Navigational Property [One]
+        public Department Department { get; set; }
+
     }
 }
