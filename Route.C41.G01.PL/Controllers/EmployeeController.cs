@@ -20,6 +20,7 @@ namespace Route.C41.G01.PL.Controllers
 
         public IActionResult Index()
         {
+            TempData.Keep();
             // Binding Throw View's Dictionary : Transfare Date From Action To View [One Way]
 
             // 1. ViewData is a Dictionary type property [introduced in ASp.Net Framework 3.5]
@@ -49,8 +50,16 @@ namespace Route.C41.G01.PL.Controllers
             if (ModelState.IsValid)
             {
                 var Count = _employeeInterface.Add(employee);
+
+                // 3. TempData is a Dictionary type property [introduced in ASp.Net Framework 3.5]
+                //   => It helps us to to pass data from the controller(Action) to another Controller[Action].
+
                 if (Count > 0)
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee Created Successfuly";
+                else
+                    TempData["Message"] = "An Error Occured , Employee Not Created :(";
+
+                return RedirectToAction(nameof(Index));
 
             }
                 return View();
