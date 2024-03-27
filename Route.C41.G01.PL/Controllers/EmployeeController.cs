@@ -1,27 +1,44 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BL.Interfaces;
 using Route.C41.G01.DAL.Models;
+using Route.C41.G01.PL.ViewModels;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Route.C41.G01.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly IMapper _mapper;
         private readonly IEmployeeInterface _employeeInterface;
         private readonly IWebHostEnvironment _env;
+        //private readonly IDepartmentRepository _departmentRepo;
 
-        public EmployeeController(IEmployeeInterface employeeInterface , IWebHostEnvironment env)// Ask CLR for creating an object from class implementing "IEmployeeInterface"
+        public EmployeeController(IMapper mapper , IEmployeeInterface employeeInterface,/*IDepartmentRepository departmentRepo ,*/ IWebHostEnvironment env)// Ask CLR for creating an object from class implementing "IEmployeeInterface"
         {
+            _mapper = mapper;
             _employeeInterface = employeeInterface;
             _env = env;
+            //_departmentRepo = departmentRepo;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchInp)
         {
-            var employee = _employeeInterface.GetAll();
-            return View(employee);
+            var employee = Enumerable.Empty<Employee>();
+
+            if (string.IsNullOrEmpty(searchInp))
+                employee = _employeeInterface.GetAll();
+            else
+                employee = _employeeInterface.SearchByName(searchInp.ToLower());
+
+            var mappedEmp = _mapper.Map<IEnumerable<Employee> , IEnumerable<EmployeeViewModel>>(employee);
+            
+             return View(mappedEmp);
         }
 
         
@@ -33,16 +50,26 @@ namespace Route.C41.G01.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Create(Employee employee)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(EmployeeViewModel employeeVM)
         {
             if (ModelState.IsValid)
             {
-                var Count = _employeeInterface.Add(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+                var Count = _employeeInterface.Add(mappedEmp);
+
+                // 3. TempData is a Dictionary type property [introduced in ASp.Net Framework 3.5]
+                //   => It helps us to to pass data from the controller(Action) to another Controller[Action].
+
                 if (Count > 0)
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee Created Successfuly";
+                else
+                    TempData["Message"] = "An Error Occured , Employee Not Created :(";
+
+                return RedirectToAction(nameof(Index));
 
             }
-                return View();
+                return View(employeeVM);
 
 
         }
@@ -56,10 +83,13 @@ namespace Route.C41.G01.PL.Controllers
                 return BadRequest(); // 400
 
             var employee = _employeeInterface.Get(id.Value);
+
+            var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
+
             if (employee is null)
                 return NotFound();  // 404
 
-            return View(ViewName, employee);
+            return View(ViewName, mappedEmp);
 
         }
 
@@ -69,15 +99,16 @@ namespace Route.C41.G01.PL.Controllers
         //[HttpGet]
         public IActionResult Edit(int? id)
         {
+            //ViewBag.Departments = _departmentRepo.GetAll();
             return Details(id, "Edit");
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? id , Employee employee)
+        public IActionResult Edit([FromRoute] int? id , EmployeeViewModel employeeVM)
         {
-            if (id != employee.Id)
+            if (id != employeeVM.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
@@ -85,7 +116,9 @@ namespace Route.C41.G01.PL.Controllers
 
             try
             {
-                _employeeInterface.Update(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+                _employeeInterface.Update(mappedEmp);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -98,7 +131,7 @@ namespace Route.C41.G01.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "OOPS :( An Error Occured During Updating Employee");
 
-                return View(employee);
+                return View(employeeVM);
             }
         }
 
@@ -113,11 +146,13 @@ namespace Route.C41.G01.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Delete(Employee employee)
+        public IActionResult Delete(EmployeeViewModel employeeVM)
         {
             try
             {
-                _employeeInterface.Delete(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+                _employeeInterface.Delete(mappedEmp);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -127,7 +162,7 @@ namespace Route.C41.G01.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error Occured During Deleting This Employee");
 
-                return View(employee);
+                return View(employeeVM);
             }
 
         }

@@ -9,10 +9,13 @@ using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BL.Interfaces;
 using Route.C41.G01.BL.Repositories;
 using Route.C41.G01.DAL.Data;
+using Route.C41.G01.PL.Extentions;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Route.C41.G01.PL.Helpers;
 
 namespace Route.C41.G01.PL
 {
@@ -38,11 +41,13 @@ namespace Route.C41.G01.PL
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            }/*,ServiceLifetime.Scoped*/);
 
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IEmployeeInterface, EmployeeRepository>();
+            //ApplicationServicesExtintions.ApplicationServices(services); // Static Method
 
+            services.ApplicationServices(); // Extention Method
+
+            services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

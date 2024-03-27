@@ -27,6 +27,10 @@ namespace Route.C41.G01.DAL.Data.Configurations
                 .HasMaxLength(50)
                 .IsRequired();
 
+            builder.HasMany(D => D.Employees)
+                .WithOne(E => E.Department)
+                .HasForeignKey(E => E.DepartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

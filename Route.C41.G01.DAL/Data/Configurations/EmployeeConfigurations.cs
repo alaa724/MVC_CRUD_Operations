@@ -26,6 +26,8 @@ namespace Route.C41.G01.DAL.Data.Configurations
                     (Gender) => Gender.ToString(),
                     (genderAsString) => (Gender) Enum.Parse(typeof(Gender) , genderAsString , true)
                 );
+
+           
         }
     }
 }
