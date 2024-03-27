@@ -25,34 +25,24 @@ namespace Route.C41.G01.DAL.Models
     public class Employee : BaseModel
     {
 
-        [Required(ErrorMessage ="Name is required !!")]
-        [MaxLength(50 , ErrorMessage ="Max length of name is 50 char")]
-        [MinLength(4 , ErrorMessage = "Min length of name is 4 char")]
+        [Required]
+        [MaxLength(50)]
         public string Name { get; set; }
 
-        [Range(22 , 60)]
         public int? Age { get; set; }
 
         public Gender Gender { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z0-9\s\-\(\)\\/.,]+$"
-            , ErrorMessage = "Address Must be like 123 Main St.")]
         public string Address { get; set; }
 
-        [DataType(DataType.Currency)]
         public decimal Salary { get; set; }
 
-        [Display(Name ="Is Active")]
         public bool IsActive { get; set; }
 
-        [EmailAddress]
         public string Email { get; set; }
 
-        [Display(Name ="Phone Number")]
-        [Phone]
         public string PhoneNumber { get; set; }
 
-        [Display(Name ="Hiring Date")]
         public DateTime HiringDate { get; set; }
 
         public ContractType ContractType { get; set; }
@@ -61,10 +51,7 @@ namespace Route.C41.G01.DAL.Models
 
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
-        public int? DepartmentId { get; set; } // FK Column
-
-        //[InverseProperty(nameof(Models.Department.Employees))]
-        // Navigational Property [One] => [Related Data]
+        public int? DepartmentId { get; set; } 
         public Department Department { get; set; }
 
     }
