@@ -14,19 +14,25 @@ namespace Route.C41.G01.PL.Controllers
 {
     public class DepartmentController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IDepartmentRepository _departmentRepo;
         private readonly IWebHostEnvironment _env;
+        //private readonly IDepartmentRepository _departmentRepo;
 
         // Inheritance : DepartmentRepository is a Controller
         // Composation : DepartmentController has a DepartmentRepository
 
 
-        public DepartmentController( IMapper mapper, IDepartmentRepository departmentRepo , IWebHostEnvironment env) // Ask CLR for creating an object from class implementing "IDepartmentRepository" Interface
+        public DepartmentController( 
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            //IDepartmentRepository departmentRepo ,
+            IWebHostEnvironment env) // Ask CLR for creating an object from class implementing "IDepartmentRepository" Interface
         {
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _departmentRepo = departmentRepo;
             _env = env;
+            //_departmentRepo = departmentRepo;
         }
 
 
@@ -35,7 +41,7 @@ namespace Route.C41.G01.PL.Controllers
 
         public IActionResult Index()
         {
-            var departments = _departmentRepo.GetAll();
+            var departments = _unitOfWork.Repository<Department>().GetAll();
 
             var mappedDept = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
 
@@ -56,7 +62,9 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedDept = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                var count = _departmentRepo.Add(mappedDept);
+                _unitOfWork.Repository<Department>().Add(mappedDept);
+
+                var count = _unitOfWork.Complete();
 
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
@@ -73,7 +81,7 @@ namespace Route.C41.G01.PL.Controllers
             if (!id.HasValue)
                 return BadRequest(); // 400
 
-            var department = _departmentRepo.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
 
             var mappedDept = _mapper.Map<Department, DepartmentViewModel>(department);
 
@@ -114,7 +122,9 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedDept = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _departmentRepo.Update(mappedDept);
+                _unitOfWork.Repository<Department>().Update(mappedDept);
+
+                _unitOfWork.Complete();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -151,7 +161,9 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedDept = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _departmentRepo.Delete(mappedDept);
+                _unitOfWork.Repository<Department>().Delete(mappedDept);
+
+                _unitOfWork.Complete();
 
                 return RedirectToAction(nameof(Index));
             }
