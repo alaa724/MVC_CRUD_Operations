@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BL.Interfaces;
 using Route.C41.G01.BL.Repositories;
 using Route.C41.G01.DAL.Models;
+using Route.C41.G01.PL.Helpers;
 using Route.C41.G01.PL.ViewModels;
 using System;
 using System.Collections;
@@ -63,7 +64,10 @@ namespace Route.C41.G01.PL.Controllers
         {
             if (ModelState.IsValid)
             {
+                employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image , "Images");
+
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
 
                _unitOfWork.Repository<Employee>().Add(mappedEmp);
 
@@ -77,7 +81,9 @@ namespace Route.C41.G01.PL.Controllers
                 var Count = _unitOfWork.Complete();
 
                 if(Count > 0)
+                {
                     return RedirectToAction(nameof(Index));
+                }
 
             }
                 return View(employeeVM);
