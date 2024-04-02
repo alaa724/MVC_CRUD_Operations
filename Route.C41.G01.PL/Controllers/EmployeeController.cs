@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BL.Interfaces;
+using Route.C41.G01.BL.Repositories;
 using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.ViewModels;
 using System;
@@ -14,27 +15,34 @@ namespace Route.C41.G01.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IEmployeeInterface _employeeInterface;
         private readonly IWebHostEnvironment _env;
+        //private readonly IEmployeeInterface _employeeInterface;
         //private readonly IDepartmentRepository _departmentRepo;
 
-        public EmployeeController(IMapper mapper , IEmployeeInterface employeeInterface,/*IDepartmentRepository departmentRepo ,*/ IWebHostEnvironment env)// Ask CLR for creating an object from class implementing "IEmployeeInterface"
+        public EmployeeController(
+                                IUnitOfWork unitOfWork,
+                                IMapper mapper ,
+                               //IEmployeeInterface employeeInterface,
+                               /*IDepartmentRepository departmentRepo ,*/
+                               IWebHostEnvironment env)// Ask CLR for creating an object from class implementing "IEmployeeInterface"
         {
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _employeeInterface = employeeInterface;
             _env = env;
-            //_departmentRepo = departmentRepo;
         }
 
         public IActionResult Index(string searchInp)
         {
             var employee = Enumerable.Empty<Employee>();
 
+            var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
+
             if (string.IsNullOrEmpty(searchInp))
-                employee = _employeeInterface.GetAll();
+                employee = _unitOfWork.Repository<Employee>().GetAll();
             else
-                employee = _employeeInterface.SearchByName(searchInp.ToLower());
+                employee = employeeRepo.SearchByName(searchInp.ToLower());
 
             var mappedEmp = _mapper.Map<IEnumerable<Employee> , IEnumerable<EmployeeViewModel>>(employee);
             
@@ -56,17 +64,20 @@ namespace Route.C41.G01.PL.Controllers
             if (ModelState.IsValid)
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                var Count = _employeeInterface.Add(mappedEmp);
 
-                // 3. TempData is a Dictionary type property [introduced in ASp.Net Framework 3.5]
-                //   => It helps us to to pass data from the controller(Action) to another Controller[Action].
+               _unitOfWork.Repository<Employee>().Add(mappedEmp);
 
-                if (Count > 0)
-                    TempData["Message"] = "Employee Created Successfuly";
-                else
-                    TempData["Message"] = "An Error Occured , Employee Not Created :(";
+                // 2. Update Department
+                // _unitOfWork.Repository<Department>.Update(mappedDept);
 
-                return RedirectToAction(nameof(Index));
+                // 3. Delete Project
+                // _unitOfWork.Repository<Project>.Remove(mappedEmp);
+
+                // _dbcontext.SaveChanges();
+                var Count = _unitOfWork.Complete();
+
+                if(Count > 0)
+                    return RedirectToAction(nameof(Index));
 
             }
                 return View(employeeVM);
@@ -82,7 +93,7 @@ namespace Route.C41.G01.PL.Controllers
             if (!id.HasValue)
                 return BadRequest(); // 400
 
-            var employee = _employeeInterface.Get(id.Value);
+            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
 
             var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
 
@@ -118,7 +129,8 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-                _employeeInterface.Update(mappedEmp);
+                _unitOfWork.Repository<Employee>().Update(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -152,7 +164,8 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-                _employeeInterface.Delete(mappedEmp);
+                _unitOfWork.Repository<Employee>().Delete(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
