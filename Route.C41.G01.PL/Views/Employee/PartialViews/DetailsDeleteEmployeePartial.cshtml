@@ -8,6 +8,10 @@
     var departments = new SelectList(_unitOfWork.Repository<Department>().GetAll(), nameof(Department.Id), nameof(Department.Name));
 }
 
+<div>
+    <img src="~/files/Images/@Model.ImageName" width="70" class="img-fluid rounded-circle" alt="Employee Image"/>
+</div>
+
 <div class="form-group">
     <label class="col-form-label" asp-for="Name"></label>
     <input asp-for="Name" class="form-control" readonly />
