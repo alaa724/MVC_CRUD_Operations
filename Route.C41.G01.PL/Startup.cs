@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Route.C41.G01.PL.Helpers;
+using Microsoft.AspNetCore.Identity;
+using Route.C41.G01.DAL.Models;
 
 namespace Route.C41.G01.PL
 {
@@ -48,6 +50,25 @@ namespace Route.C41.G01.PL
             services.ApplicationServices(); // Extention Method
 
             services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+
+            services.AddIdentity<ApplicationUsers , IdentityRole>(options =>
+            {
+                options.Password.RequiredUniqueChars = 2;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true; // @#$
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+
+                //options.User.AllowedUserNameCharacters = "asdfg12345@"
+                options.User.RequireUniqueEmail = true;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
+
+
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
