@@ -47,15 +47,16 @@ namespace Route.C41.G01.BL
             _repository = new Hashtable();
         }
 
-        public int Complete()
+        public async Task<int> Complete()
         {
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _dbContext.Dispose(); // Close Connetion
+            await _dbContext.DisposeAsync(); // Close Connetion
         }
 
+        
     }
 }
