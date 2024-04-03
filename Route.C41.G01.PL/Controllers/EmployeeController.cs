@@ -137,6 +137,8 @@ namespace Route.C41.G01.PL.Controllers
 
             try
             {
+                employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "Images");
+
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
                 _unitOfWork.Repository<Employee>().Update(mappedEmp);
