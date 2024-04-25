@@ -1,20 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Route.C41.G01.BL.Interfaces;
-using Route.C41.G01.BL.Repositories;
 using Route.C41.G01.DAL.Data;
 using Route.C41.G01.PL.Extentions;
-using AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Route.C41.G01.PL.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Route.C41.G01.DAL.Models;
@@ -68,7 +60,10 @@ namespace Route.C41.G01.PL
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
 
 
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //services.AddAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
