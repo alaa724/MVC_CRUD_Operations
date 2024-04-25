@@ -15,7 +15,7 @@ namespace Route.C41.G01.PL.Services.EmailSender
 			_configuration = configuration;
 		}
 
-		public async Task SendlAsync(string from, string recipents, string subject, string body)
+		public async Task SendAsync(string from, string recipents, string subject, string body)
 		{
 			var senderEmail = _configuration["EmailSettings:SenderEmail"];
 			var senderpassword = _configuration["EmailSettings:SenderPassword"];
