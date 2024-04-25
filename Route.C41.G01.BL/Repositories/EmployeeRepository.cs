@@ -25,6 +25,9 @@ namespace Route.C41.G01.BL.Repositories
             return _dbContext.Employees.Where(E => E.Address.ToLower() == address.ToLower());
         }
 
+        public override async Task<IEnumerable<Employee>> GetAllAsync()
+            => await _dbContext.Set<Employee>().Include(E => E.Department).AsNoTracking().ToListAsync();
+
         public IQueryable<Employee> SearchByName(string name)
             => _dbContext.Employees.Where(E => E.Name.ToLower().Contains(name));
     }

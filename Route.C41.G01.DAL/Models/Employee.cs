@@ -51,6 +51,8 @@ namespace Route.C41.G01.DAL.Models
 
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
+        public string ImageName { get; set; }
+
         public int? DepartmentId { get; set; } 
         public Department Department { get; set; }
 
