@@ -65,7 +65,7 @@ namespace Route.C41.G01.PL
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "Account/SignIn";
+                options.LoginPath = "/Account/SignIn";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.AccessDeniedPath = "/Home/Error";
                 
