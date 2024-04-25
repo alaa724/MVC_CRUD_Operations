@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G01.PL.Controllers
 {
-    public class DepartmentController : Controller
+	[Authorize]
+	public class DepartmentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
